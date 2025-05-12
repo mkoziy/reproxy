@@ -323,15 +323,17 @@ func (h *Http) matchHandler(next http.Handler) http.Handler {
 	}
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		server := r.URL.Hostname()
-		if server == "" {
-			hostParts := strings.Split(r.Host, ":")
-			server = hostParts[0]
-			if len(hostParts) > 1 && hostParts[1] != "80" {
-				server = r.Host
+		serverName := r.Host
+		host, port, err := net.SplitHostPort(r.Host)
+		if err == nil {
+			if port == "80" || port == "443" {
+				serverName = host
+			} else {
+				serverName = fmt.Sprintf("%s:%s", host, port)
 			}
 		}
-		
+		server := serverName
+
 		matches := h.Match(server, r.URL.EscapedPath()) // get all matches for the server:path pair
 		match, ok := getMatch(matches, h.LBSelector)
 		if ok {
