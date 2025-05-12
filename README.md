@@ -1,3 +1,9 @@
+Fork of https://github.com/umputun/reproxy
+
+
+The diff, so far:
+* do not drop port from a hostname
+
 <div align="center">
   <img class="logo" src="https://raw.githubusercontent.com/umputun/reproxy/master/site/logo-bg.svg" width="355px" height="142px" alt="Reproxy | Simple Reverse Proxy"/>
 </div>

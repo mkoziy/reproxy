@@ -325,8 +325,13 @@ func (h *Http) matchHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		server := r.URL.Hostname()
 		if server == "" {
-			server = strings.Split(r.Host, ":")[0] // drop port
+			hostParts := strings.Split(r.Host, ":")
+			server = hostParts[0]
+			if len(hostParts) > 1 && hostParts[1] != "80" {
+				server = r.Host
+			}
 		}
+		
 		matches := h.Match(server, r.URL.EscapedPath()) // get all matches for the server:path pair
 		match, ok := getMatch(matches, h.LBSelector)
 		if ok {
